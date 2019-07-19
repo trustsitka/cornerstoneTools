@@ -11,7 +11,10 @@ import { state } from './index.js';
  */
 export default function cancelDrawing() {
   state.tools.forEach(tool => {
-    if (Object.prototype.hasOwnProperty.call(tool, 'cancelDrawing')) {
+    if (
+      tool.mode === 'active' &&
+      Object.prototype.hasOwnProperty.call(tool, 'cancelDrawing')
+    ) {
       tool.cancelDrawing();
     }
   });
