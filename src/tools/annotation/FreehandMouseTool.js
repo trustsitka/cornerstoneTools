@@ -85,6 +85,7 @@ export default class FreehandMouseTool extends BaseAnnotationTool {
     this._editTouchDragCallback = this._editTouchDragCallback.bind(this);
 
     this.throttledUpdateCachedStats = throttle(this.updateCachedStats, 110);
+    this.cancelDrawing = this.cancelDrawing.bind(this);
   }
 
   createNewMeasurement(eventData) {
@@ -221,16 +222,14 @@ export default class FreehandMouseTool extends BaseAnnotationTool {
   }
 
   /**
-   *
-   *
-   *
-   * @param image
-   * @param element
-   * @param data
+   * @param {*} image
+   * @param {*} element
+   * @param {*} data
+   * @returns {undefined}
    */
   updateCachedStats(image, element, data) {
     // Define variables for the area and mean/standard deviation
-    let area, meanStdDev, meanStdDevSUV;
+    let meanStdDev, meanStdDevSUV;
 
     const seriesModule = external.cornerstone.metaData.get(
       'generalSeriesModule',
@@ -320,7 +319,7 @@ export default class FreehandMouseTool extends BaseAnnotationTool {
     const rowPixelSpacing = image.rowPixelSpacing || 1;
     const scaling = columnPixelSpacing * rowPixelSpacing;
 
-    area = freehandArea(data.handles.points, scaling);
+    const area = freehandArea(data.handles.points, scaling);
 
     // If the area value is sane, store it for later retrieval
     if (!isNaN(area)) {
@@ -625,6 +624,11 @@ export default class FreehandMouseTool extends BaseAnnotationTool {
     const currentTool = config.currentTool;
 
     const data = toolState.data[currentTool];
+
+    if (!data) {
+      return;
+    }
+
     const coords = eventData.currentPoints.canvas;
 
     // Set the mouseLocation handle
@@ -686,6 +690,10 @@ export default class FreehandMouseTool extends BaseAnnotationTool {
 
     const data = toolState.data[currentTool];
 
+    if (!data) {
+      return;
+    }
+
     // Set the mouseLocation handle
     this._getMouseLocation(eventData);
     this._checkInvalidHandleLocation(data, eventData);
@@ -719,7 +727,10 @@ export default class FreehandMouseTool extends BaseAnnotationTool {
     const toolState = getToolState(eventData.element, this.name);
     const data = toolState.data[currentTool];
 
-    if (!freehandIntersect.end(data.handles.points) && data.canComplete) {
+    if (
+      !data ||
+      (!freehandIntersect.end(data.handles.points) && data.canComplete)
+    ) {
       const lastHandlePlaced = config.currentHandle;
 
       this._endDrawing(element, lastHandlePlaced);
@@ -751,6 +762,10 @@ export default class FreehandMouseTool extends BaseAnnotationTool {
     const currentTool = config.currentTool;
     const toolState = getToolState(eventData.element, this.name);
     const data = toolState.data[currentTool];
+
+    if (!data) {
+      return;
+    }
 
     const handleNearby = this._pointNearHandle(element, data, coords);
 
@@ -1128,26 +1143,28 @@ export default class FreehandMouseTool extends BaseAnnotationTool {
     const config = this.configuration;
     const data = toolState.data[config.currentTool];
 
-    data.active = false;
-    data.highlight = false;
-    data.handles.invalidHandlePlacement = false;
+    if (data) {
+      data.active = false;
+      data.highlight = false;
+      data.handles.invalidHandlePlacement = false;
 
-    // Connect the end handle to the origin handle
-    if (handleNearby !== undefined) {
-      const points = data.handles.points;
+      // Connect the end handle to the origin handle
+      if (handleNearby !== undefined) {
+        const points = data.handles.points;
 
-      points[config.currentHandle - 1].lines.push(points[0]);
+        points[config.currentHandle - 1].lines.push(points[0]);
+      }
+
+      if (this._modifying) {
+        this._modifying = false;
+        data.invalidated = true;
+      }
+
+      // Reset the current handle
+      config.currentHandle = 0;
+      config.currentTool = -1;
+      data.canComplete = false;
     }
-
-    if (this._modifying) {
-      this._modifying = false;
-      data.invalidated = true;
-    }
-
-    // Reset the current handle
-    config.currentHandle = 0;
-    config.currentTool = -1;
-    data.canComplete = false;
 
     if (this._drawing) {
       this._deactivateDraw(element);
@@ -1737,26 +1754,26 @@ export default class FreehandMouseTool extends BaseAnnotationTool {
     if (!this._drawing) {
       return;
     }
-    const toolState = getToolState(element, this.name);
-
     const config = this.configuration;
-
-    const data = toolState.data[config.currentTool];
-
-    data.active = false;
-    data.highlight = false;
-    data.handles.invalidHandlePlacement = false;
 
     // Reset the current handle
     config.currentHandle = 0;
     config.currentTool = -1;
-    data.canComplete = false;
 
-    removeToolState(element, this.name, data);
+    if (element) {
+      const toolState = getToolState(element, this.name);
+      const data = toolState.data[config.currentTool];
 
-    this._deactivateDraw(element);
+      data.active = false;
+      data.highlight = false;
+      data.handles.invalidHandlePlacement = false;
+      data.canComplete = false;
 
-    external.cornerstone.updateImage(element);
+      removeToolState(element, this.name, data);
+      this._deactivateDraw(element);
+
+      external.cornerstone.updateImage(element);
+    }
   }
 
   /**

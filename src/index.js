@@ -123,6 +123,7 @@ import { playClip, stopClip } from './stackTools/playClip.js';
 
 // ~~~~~~ STATE MANAGEMENT ~~~~~ //
 import { default as store } from './store/index.js';
+import { default as cancelDrawing } from './store/cancelDrawing.js';
 import { default as getToolForElement } from './store/getToolForElement.js';
 import { addTool, addToolForElement } from './store/addTool.js';
 import { removeTool, removeToolForElement } from './store/removeTool.js';
@@ -242,6 +243,7 @@ const cornerstoneTools = {
   playClip,
   stopClip,
   store,
+  cancelDrawing,
   getToolForElement,
   addTool,
   addToolForElement,
@@ -341,6 +343,7 @@ export {
   playClip,
   stopClip,
   store,
+  cancelDrawing,
   getToolForElement,
   addTool,
   addToolForElement,
