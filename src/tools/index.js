@@ -6,7 +6,7 @@ import FreehandSculpterMouseTool from './FreehandSculpterMouseTool.js';
 import MagnifyTool from './MagnifyTool.js';
 import PanMultiTouchTool from './PanMultiTouchTool.js';
 import PanTool from './PanTool.js';
-import PanZoomMouseWheelTool from './PanZoomMouseWheelTool.js';
+import PanZoomTool from './PanZoomTool.js';
 import ReferenceLinesTool from './ReferenceLinesTool.js';
 import RotateTool from './RotateTool.js';
 import RotateTouchTool from './RotateTouchTool.js';
@@ -30,7 +30,7 @@ export {
   MagnifyTool,
   PanMultiTouchTool,
   PanTool,
-  PanZoomMouseWheelTool,
+  PanZoomTool,
   ReferenceLinesTool,
   RotateTool,
   RotateTouchTool,
@@ -55,7 +55,7 @@ export default {
   MagnifyTool,
   PanMultiTouchTool,
   PanTool,
-  PanZoomMouseWheelTool,
+  PanZoomTool,
   ReferenceLinesTool,
   RotateTool,
   RotateTouchTool,

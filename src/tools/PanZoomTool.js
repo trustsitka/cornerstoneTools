@@ -3,17 +3,17 @@ import { setToolActive, setToolPassive } from '../store/setToolMode.js';
 
 /**
  * @public
- * @class PanZoomMouseWheelTool
+ * @class PanZoomTool
  * @memberof Tools
  *
  * @classdesc Tool that combines Pan and ZoomWheel behavior.
  * @extends Tools.Base.BaseTool
  */
 
-export default class PanZoomMouseWheelTool extends BaseTool {
+export default class PanZoomTool extends BaseTool {
   constructor(props = {}) {
     const defaultProps = {
-      name: 'PanZoomMouseWheel',
+      name: 'PanZoom',
       supportedInteractionTypes: ['Mouse', 'MouseWheel'],
     };
 
