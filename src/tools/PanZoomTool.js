@@ -21,6 +21,7 @@ export default class PanZoomTool extends BaseTool {
 
     this.referencedToolNames = {
       pan: 'Pan',
+      stackScrollWheel: 'StackScrollMouseWheel',
       zoomWheel: 'ZoomMouseWheel',
     };
   }
@@ -32,5 +33,13 @@ export default class PanZoomTool extends BaseTool {
 
   passiveCallback() {
     setToolPassive(this.referencedToolNames.zoomWheel);
+
+    // TODO: Temporary workaround re-enabling stack scrolling
+    // with mouse wheel when Pan/Zoom is disabled. Ideally
+    // we should figure a way to define constant defaults for masks
+    // for when no tools are active.
+    setToolActive(this.referencedToolNames.stackScrollWheel, {
+      mouseButtonMask: 4,
+    });
   }
 }
