@@ -88,7 +88,7 @@ import {
   RectangleRoiTool,
   TextMarkerTool,
 } from './tools/annotation/index.js';
-import { BrushTool } from './tools/brush/index.js';
+import { BrushTool, BrushEraserTool } from './tools/brush/index.js';
 import {
   CrosshairsTool,
   DoubleTapFitToWindowTool,
@@ -216,6 +216,7 @@ const cornerstoneTools = {
   RectangleRoiTool,
   TextMarkerTool,
   // ~ Brush Tools
+  BrushEraserTool,
   BrushTool,
   // ~ Tools
   CrosshairsTool,
@@ -317,6 +318,7 @@ export {
   RectangleRoiTool,
   TextMarkerTool,
   // ~ Brush Tools
+  BrushEraserTool,
   BrushTool,
   // ~ Tools
   CrosshairsTool,
